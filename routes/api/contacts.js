@@ -8,21 +8,21 @@ const {
   validationUpdateStatusContact
 } = require('./validator-router')
 
-const handleError = require('../../helpers/handle-error')
-router.get('/', async (req, res, next) => {
-  try {
-    const contacts = await Contacts.listContacts()
-    return res.json({
-      status: "success",
-      code: 200,
-      data: {
-        contacts,
-      }
-    })
-  } catch (e) {
-    next(e)
-  }
-})
+// const handleError = require('../../helpers/handle-error')
+// router.get('/', async (req, res, next) => {
+//   try {
+//     const contacts = await Contacts.listContacts()
+//     return res.json({
+//       status: "success",
+//       code: 200,
+//       data: {
+//         contacts,
+//       }
+//     })
+//   } catch (e) {
+//     next(e)
+//   }
+// })
 
 router.get('/:id', validationObjectId, async (req, res, next) => {
   try {
@@ -48,19 +48,19 @@ router.get('/:id', validationObjectId, async (req, res, next) => {
   }
 })
 
-router.post('/',
-  validationCreateContact,
-  handleError(async (req, res, next) => {
-    const contact = await Contacts.addContact(req.body)
-      return res.status(201).json({
-        status: "created",
-        code: 201,
-        data: {
-          contact,
-        },
-      })
-    }),
-)
+// router.post('/',
+//   validationCreateContact,
+//   handleError(async (req, res, next) => {
+//     const contact = await Contacts.addContact(req.body)
+//       return res.status(201).json({
+//         status: "created",
+//         code: 201,
+//         data: {
+//           contact,
+//         },
+//       })
+//     }),
+// )
 
 // router.post('/', validationCreateContact, async (req, res, next) => {
 //   try {
