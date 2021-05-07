@@ -15,6 +15,15 @@ const schemaCreateContact = Joi.object({
     phone: Joi.string().length(14).optional(),
 })
 
+const schemaQueryContact = Joi.object({
+    sortBy: Joi.string().valid('name', 'email').optional(),
+    sortByDesc: Joi.string().valid('name', 'email').optional(),
+    filter: Joi.string().optional(),
+    limit: Joi.number().integer().min(1).max(20).optional(),
+    offset: Joi.number().integer().min(0).optional(),
+    favorite: Joi.bool(),
+}).without('sortBy', 'sortByDesc')
+
 const schemaUpdateContact = Joi.object({
     name: Joi.string()
         .alphanum()
@@ -59,5 +68,9 @@ module.exports = {
     },
     validationUpdateStatusContact: async (req, res, next) => {
         return await validate(schemaUpdateStatusContact, req.body, next)
-    }
+    },
+    validationQueryContact: async (req, res, next) => {
+        return await validate(schemaQueryContact, req.query, next)
+    },
+
 }
