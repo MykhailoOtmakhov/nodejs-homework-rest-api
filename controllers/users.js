@@ -14,7 +14,7 @@ const reg = async (req, res, next) => {
         return res.status(HttpCode.CONFLICT).json({
             status: 'error',
             code: HttpCode.CONFLICT,
-            message: 'Email in use',
+            message: 'Email in use'
         })
     }
     try {
@@ -25,7 +25,7 @@ const reg = async (req, res, next) => {
             data: {
                 id: newUser.id,
                 email: newUser.email,
-                gender: newUser.gender,
+                gender: newUser.gender
             }
         })
     } catch (e) {
@@ -50,7 +50,7 @@ const login = async (req, res, next) => {
         return res.status(HttpCode.OK).json({
             status: 'success',
             code: HttpCode.OK,
-            data: { token },      
+            data: { token }
         })    
 }
 
@@ -59,8 +59,7 @@ const logout = async (req, res, next) => {
     await Users.updateToken(id, null)
     return res.status(HttpCode.NO_CONTENT).json({
         status: 'success',
-        code: HttpCode.OK,
-        // data: { email },  
+        code: HttpCode.OK 
     })
 }
 
