@@ -3,7 +3,7 @@ const Contacts = require('./schemas/contacts')
 
 
 const listContacts = async (userId, query) => {
-  const { sortBy, sortByDesc, filter, favorite = null, limit = 5, offset = 0} = query
+  const { sortBy, sortByDesc, filter, favorite = null, limit = 20, offset = 0} = query
   const optionsSearch = { owner: userId }
   if (favorite !== null) {
     optionsSearch.favorite = favorite
