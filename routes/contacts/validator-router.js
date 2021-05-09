@@ -1,7 +1,6 @@
 const Joi = require('joi');
 const mongoose = require('mongoose')
 
-
 const schemaCreateContact = Joi.object({
     name: Joi.string()
         .min(3)
@@ -42,8 +41,6 @@ const schemaUpdateStatusContact = Joi.object({
     favorite: Joi.bool().required(),
 })
     
-
-
 const validate = async (schema, obj, next) => {
     try {
         await schema.validateAsync(obj)
@@ -72,5 +69,4 @@ module.exports = {
     validationQueryContact: async (req, res, next) => {
         return await validate(schemaQueryContact, req.query, next)
     },
-
 }

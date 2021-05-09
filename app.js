@@ -5,7 +5,6 @@ const boolParser = require('express-query-boolean')
 const helmet = require('helmet')
 const rateLimit = require("express-rate-limit");
 
-
 const contactsRouter = require('./routes/contacts')
 const usersRouter = require('./routes/users')
 
