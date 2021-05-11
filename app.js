@@ -27,14 +27,14 @@ const limiter = rateLimit({
   }
 })
 app.use(limiter);
-
 app.use(cors({
   "origin": "*",
   "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
   "preflightContinue": false,
   "optionsSuccessStatus": 204
 }))
-app.use(express.json())
+
+app.use(express.json({ limit: 100000 }))
 app.use(boolParser())
 
 app.use('/api/users', usersRouter)
