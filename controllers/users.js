@@ -78,8 +78,8 @@ const logout = async (req, res, next) => {
 
 const updateAvatar = async (req, res, next) => {
     const { id } = req.user
-    const avatarUrl = await saveAvatar(req)
-    // const { idCloudAvatar, avatarUrl } = await saveAvatarUserToCloud(req)
+    // const avatarUrl = await saveAvatar(req)
+    const { idCloudAvatar, avatarUrl } = await saveAvatarUserToCloud(req)
 
     await Users.updateAvatar(id, avatarUrl)
     // await Users.updateAvatar(id, avatarUrl, idCloudAvatar)
