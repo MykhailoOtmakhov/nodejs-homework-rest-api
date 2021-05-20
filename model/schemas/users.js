@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const gravatar = require('gravatar')
 const { Schema, model } = mongoose
 const { Gender } = require('../../helpers/constants')
 const bcrypt = require('bcryptjs')
@@ -33,6 +34,16 @@ const userSchema = new Schema({
     default: "starter"
   },
   token: {
+    type: String,
+    default: null,
+  },
+  avatar: {
+    type: String,
+    default: function () {
+      return gravatar.url(this.email, { s: '250' }, true)
+    }
+  },
+  idCloudAvatar: {
     type: String,
     default: null,
   },
