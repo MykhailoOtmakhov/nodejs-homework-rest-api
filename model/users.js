@@ -4,6 +4,10 @@ const findById = async (id) => {
     return await User.findOne({_id: id})
 }
 
+const findByVerifyTokenEmail = async (token) => {
+    return await User.findOne({verifyTokenEmail: token})
+}
+
 const findByEmail = async (email) => {
     return await User.findOne({email})
 }
@@ -21,12 +25,18 @@ const updateAvatar = async (id, avatar, idCloudAvatar = null) => {
     return await User.updateOne({ _id: id}, { avatar, idCloudAvatar })
 }
 
+const updateVerifyToken = async (id, verify, verifyToken) => {
+    return await User.updateOne({ _id: id}, { verify, verifyTokenEmail: verifyToken })
+}
+
 
 module.exports = {
     findById,
     findByEmail,
     create,
     updateToken,
-    updateAvatar
+    updateAvatar,
+    updateVerifyToken,
+    findByVerifyTokenEmail
 }
 

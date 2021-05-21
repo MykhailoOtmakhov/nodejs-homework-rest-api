@@ -9,6 +9,7 @@ const cloudinary = require('cloudinary').v2;
 const { promisify } = require('util')
 require('dotenv').config()
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY
+const EmailService = require('../services/email')
 
 cloudinary.config({ 
   cloud_name: process.env.CLOUD_NAME, 
@@ -19,8 +20,7 @@ cloudinary.config({
 const uploadToCloud = promisify(cloudinary.uploader.upload)
 
 const reg = async (req, res, next) => {
-    const { email } = req.body
-    const user = await Users.findByEmail(email)
+    const user = await Users.findByEmail(req.body.email)
     if (user) {
         return res.status(HttpCode.CONFLICT).json({
             status: 'error',
@@ -30,14 +30,21 @@ const reg = async (req, res, next) => {
     }
     try {
         const newUser = await Users.create(req.body)
+        const { id, name, email, gender, avatar, verifyTokenEmail } = newUser
+        try {
+            const emailService = new EmailService(process.env.NODE_ENV)
+            await emailService.sendVerifyEmail(verifyTokenEmail, email, name)
+        } catch (e) {
+            console.log(e.message);
+        }
         return res.status(HttpCode.CREATED).json({
             status: 'success',
             code: HttpCode.CREATED,
             data: {
-                id: newUser.id,
-                email: newUser.email,
-                gender: newUser.gender,
-                avatar: newUser.avatar,
+                id,
+                email,
+                gender,
+                avatar,
             }
         })
     } catch (e) {
@@ -49,7 +56,7 @@ const login = async (req, res, next) => {
     const { email, password } = req.body
     const user = await Users.findByEmail(email)
     const isValidPassword = await user?.validPassword(String(password))
-    if (!user || !isValidPassword) {
+    if (!user || !isValidPassword || !user.verify) {
         return res.status(HttpCode.UNAUTHORIZED).json({
             status: 'error',
             code: HttpCode.UNAUTHORIZED,
@@ -130,9 +137,55 @@ const saveAvatarUserToCloud = async (req) => {
     
 }
 
+const verify = async (req, res, next) => {
+    try {
+        const user = await Users.findByVerifyTokenEmail(req.params.token)
+        if (user) {
+            res.status(HttpCode.OK).json({
+                status: 'success',
+                code: HttpCode.OK,
+                data: { message: 'Verification successful!' }
+            })
+        }
+        return res.status(HttpCode.BAD_REQUEST).json({
+            status: 'error',
+            code: HttpCode.BAD_REQUEST,
+            message: 'Verification failed!',
+        }) 
+    } catch (error) {
+        next(error)
+    }
+}
+    
+const repeatEmailVerify = async (req, res, next) => {
+    try {
+        const user = await Users.findByEmail(req.body.email)
+        if (user) {
+            const { name, verifyTokenEmail, email } = user
+            const emailService = new EmailService(process.env.NODE_ENV)
+            await emailService.sendVerifyEmail(verifyTokenEmail, email, name)
+            return res.status(HttpCode.OK).json({
+                status: 'success',
+                code: HttpCode.OK,
+                data: { message: 'Verification email resubmitted!' }
+            })
+        }
+        return res.status(HttpCode.NOT_FOUND).json({
+            status: 'error',
+            code: HttpCode.NOT_FOUND,
+            message: 'User not found!',
+        }) 
+    } catch (error) {
+        next(error)
+    }
+}
+
+    
 module.exports = {
     reg,
     login,
     logout,
-    updateAvatar
+    updateAvatar,
+    verify,
+    repeatEmailVerify
 }

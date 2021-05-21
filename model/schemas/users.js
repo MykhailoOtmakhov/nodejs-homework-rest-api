@@ -3,7 +3,7 @@ const gravatar = require('gravatar')
 const { Schema, model } = mongoose
 const { Gender } = require('../../helpers/constants')
 const bcrypt = require('bcryptjs')
-
+const {nanoid} = require('nanoid')
 const userSchema = new Schema({
 
   gender: {
@@ -47,6 +47,15 @@ const userSchema = new Schema({
     type: String,
     default: null,
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verifyTokenEmail: {
+    type: String,
+    required: true,
+    default: nanoid(),
+  }
 })
 
 userSchema.pre('save', async function (next) {
