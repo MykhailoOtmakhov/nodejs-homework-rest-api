@@ -55,6 +55,12 @@ class EmailService {
         }
 
         this.#sender.send(msg)
+                    .then(() => {
+              console.log('Email sent')
+            })
+            .catch((error) => {
+              console.error(error)
+            })
     }
 }
 

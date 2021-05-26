@@ -3,7 +3,7 @@ const { HttpCode } = require('../helpers/constants')
 // const { required } = require('joi')
 const jwt = require('jsonwebtoken')
 const jimp = require('jimp')
-const fs = require('fs/promises')
+const fs = require('fs').promises
 const path = require('path')
 const cloudinary = require('cloudinary').v2;
 const { promisify } = require('util')
@@ -45,6 +45,7 @@ const reg = async (req, res, next) => {
                 email,
                 gender,
                 avatar,
+                name
             }
         })
     } catch (e) {
@@ -55,6 +56,7 @@ const reg = async (req, res, next) => {
 const login = async (req, res, next) => {
     const { email, password } = req.body
     const user = await Users.findByEmail(email)
+    console.log(user);
     const isValidPassword = await user?.validPassword(String(password))
     if (!user || !isValidPassword || !user.verify) {
         return res.status(HttpCode.UNAUTHORIZED).json({
@@ -140,6 +142,7 @@ const saveAvatarUserToCloud = async (req) => {
 const verify = async (req, res, next) => {
     try {
         const user = await Users.findByVerifyTokenEmail(req.params.token)
+        console.log(req.params);
         if (user) {
             res.status(HttpCode.OK).json({
                 status: 'success',
